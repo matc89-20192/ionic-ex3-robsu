@@ -1,4 +1,4 @@
-import { browser, by, element, protractor, ElementFinder } from 'protractor';
+import { browser, by, element, $ } from 'protractor';
 
 export class Page {
 
@@ -6,58 +6,30 @@ export class Page {
     return browser.get(destination);
   }
 
-  getDescricao() {
-    return this.editDescricao().getAttribute('value');
+  getTitle() {
+    return browser.getTitle();
   }
 
-  getPrioridade() {
-    return this.editPrioridade().getAttribute('value');
+  getMensagem() {
+    return element(by.id('labelMensagem')).getText();
   }
 
-  async inserirTarefa(descricao, prioridade) {
-    await this.limpar(this.editDescricao());
-    await this.editDescricao().sendKeys(descricao);
-    await this.limpar(this.editPrioridade());
-    await this.editPrioridade().sendKeys(prioridade);
-    return this.buttonAdicionar().click();
+  async hasElements() {
+    let a = await $('#labelMensagem').isPresent();
+    let b = await $('#editNome').isPresent();
+    let c = await $('#btnCumprimentar').isPresent();
+    return a && b && c;
   }
 
-  getMensagemToast() {
-    return element(by.css('.toast-message')).getText();
+  digitaNome(nome: string) {
+    return element(by.css('#editNome .text-input')).sendKeys(nome);
   }
 
-  getItens() {
-    return element.all(by.css('#listView .item'))
-      .map(elem => elem.getText())
+  cumprimenta() {
+    return element(by.id('btnCumprimentar')).click();
   }
 
-  removerPrimeiro() {
-    return this.buttonRemover().click();
-  }
-
-  removerEnesimo(n) {
-    return element.all(by.css('#listView .item')).get(n).click();
-  }
-
-  listView() {
-    return element(by.css('#listView'));
-  }
-  editDescricao() {
-    return element(by.css('#editDescricao input'));
-  }
-  editPrioridade() {
-    return element(by.css('#editPrioridade input'));
-  }
-  buttonAdicionar() {
-    return element(by.css('#buttonAdicionar'));
-  }
-  buttonRemover() {
-    return element(by.css('#buttonRemover'));
-  }
-
-  async limpar(elem: ElementFinder) {
-    let texto = await elem.getAttribute('value');
-    let array = Array(texto.length + 1).fill(protractor.Key.BACK_SPACE);
-    await elem.sendKeys(...array);
+  getPageOneTitleText() {
+    return element(by.tagName('page-page1')).element(by.tagName('ion-title')).element(by.css('.toolbar-title')).getText();
   }
 }
